@@ -1,26 +1,232 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ------------------------------------------------------------------
+   Design tokens (Tailwind v4). The colour palette is reset so only the
+   monochrome KINETIC tokens exist as utilities.
+------------------------------------------------------------------- */
+@theme {
+  --color-*: initial;
+  --color-white: #ffffff;
+  --color-ink-950: #0a0a0a;
+  --color-ink-900: #141414;
+  --color-ink-850: #1f1f1f;
+  --color-ink-800: #262626;
+  --color-ink-700: #333333;
+  --color-ink-600: #3d3d3d;
+  --color-ink-500: #4a4a4a;
+  --color-ink-450: #5c5c5c;
+  --color-ink-400: #8f8f8f;
+  --color-ink-300: #bdbdbd;
+  --color-ink-200: #dedede;
+  --color-ink-150: #e5e5e5;
+  --color-ink-100: #f0f0f0;
+  --color-ink-50: #f5f5f5;
+
+  --radius-*: initial;
+  --radius-xs: 4px;
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+
+  --container-page: 85rem; /* 1360px */
+
+  --breakpoint-2xl: 90rem; /* 1440px */
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --shadow-raised: 0 1px 2px rgb(0 0 0 / 0.08);
+  --shadow-overlay: 0 16px 40px -16px rgb(0 0 0 / 0.28);
 }
 
+/* Values that point at runtime CSS variables (next/font, theme scopes). */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-inter-tight), sans-serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), monospace;
+
+  --color-bg: var(--bg);
+  --color-bg-subtle: var(--bg-subtle);
+  --color-fg: var(--fg);
+  --color-fg-secondary: var(--fg-secondary);
+  --color-fg-muted: var(--fg-muted);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ------------------------------------------------------------------
+   Semantic variables. [data-theme="dark"] swaps them for dark sections.
+------------------------------------------------------------------- */
+:root,
+[data-theme="light"] {
+  --bg: #ffffff;
+  --bg-subtle: #f5f5f5;
+  --fg: #0a0a0a;
+  --fg-secondary: #4a4a4a;
+  --fg-muted: #5c5c5c;
+  --border: #e5e5e5;
+  --border-strong: #bdbdbd;
+  --focus: #0a0a0a;
+
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 480ms;
+}
+
+[data-theme="dark"] {
+  --bg: #0a0a0a;
+  --bg-subtle: #141414;
+  --fg: #ffffff;
+  --fg-secondary: #bdbdbd;
+  --fg-muted: #8f8f8f;
+  --border: #262626;
+  --border-strong: #4a4a4a;
+  --focus: #ffffff;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+  }
+
+  dialog::backdrop {
+    background: rgb(10 10 10 / 0.8);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ------------------------------------------------------------------
+   Type scale
+------------------------------------------------------------------- */
+@utility display-2xl {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(64px, 11.5vw, 184px);
+  line-height: 0.88;
+  letter-spacing: -0.05em;
+}
+
+@utility display-xl {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(56px, 9vw, 152px);
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+}
+
+@utility display-lg {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(44px, 6vw, 88px);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+
+@utility heading-2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(40px, 5.5vw, 80px);
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+@utility heading-3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(28px, 2.5vw, 36px);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+
+@utility body-lg {
+  font-size: clamp(18px, 1.4vw, 20px);
+  line-height: 1.55;
+}
+
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+@utility data {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Layout */
+@utility page-container {
+  width: 100%;
+  max-width: var(--container-page);
+  margin-inline: auto;
+  padding-inline: 16px;
+
+  @media (width >= 40rem) {
+    padding-inline: 32px;
+  }
+}
+
+@utility section-y {
+  padding-block: 96px;
+
+  @media (width >= 64rem) {
+    padding-block: 144px;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Category pose "rep" loop (CategoryLoop.tsx)
+------------------------------------------------------------------- */
+@keyframes pose-rep {
+  from {
+    transform: translateY(0) scaleY(1);
+  }
+  to {
+    transform: translateY(6px) scaleY(0.9);
+  }
+}
+
+.pose-body {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+.group:hover .pose-body,
+.group:focus-visible .pose-body {
+  animation: pose-rep 1.6s cubic-bezier(0.65, 0, 0.35, 1) infinite alternate;
+}
+
+/* ------------------------------------------------------------------
+   Reduced motion: honoured globally.
+------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .group:hover .pose-body,
+  .group:focus-visible .pose-body {
+    animation: none;
+  }
 }
